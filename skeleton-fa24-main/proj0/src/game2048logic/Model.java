@@ -129,7 +129,27 @@ public class Model {
         if(emptySpaceExists()){
             return true;
         }
+        int size = board.size();
+        for(int x = 0; x < size; x ++){
+            for(int y = 0; y < size; y ++){
+                Tile temp = tile(x,y);
+                int value = temp.value();
+                if((posiVerify(x+1,y) && tile(x+1,y).value() == value) ||
+                        (posiVerify(x-1,y) && tile(x-1,y).value() == value) ||
+                            (posiVerify(x,y+1) && tile(x,y+1).value() == value) ||
+                                (posiVerify(x,y-1) && tile(x,y-1).value() == value)){
+                    return true;
+                }
+            }
+        }
         return false;
+    }
+    private boolean posiVerify(int x,int y){
+        int size = board.size();
+        if(x < 0 || x >= size || y < 0 || y >= size){
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -152,6 +172,24 @@ public class Model {
         int targetY = y;
 
         // TODO: Tasks 5, 6, and 10. Fill in this function.
+        for(int i = y+1; i < board.size(); i++){
+            Tile tempTile = board.tile(x,i);
+            if(tempTile == null){
+                targetY++;
+                continue;
+            }
+            if(tempTile.value() == myValue && !tempTile.wasMerged()) {
+                targetY = i;
+                score += 2 * myValue;
+                break;
+            }
+            else{
+                break;
+            }
+        }
+        if(targetY != y){
+            board.move(x,targetY,currTile);
+        }
     }
 
     /** Handles the movements of the tilt in column x of board B
@@ -161,10 +199,21 @@ public class Model {
      * */
     public void tiltColumn(int x) {
         // TODO: Task 7. Fill in this function.
+        for(int i = board.size()-1; i >= 0; i--){
+            if(board.tile(x,i) == null){
+                continue;
+            }
+            moveTileUpAsFarAsPossible(x,i);
+        }
     }
 
     public void tilt(Side side) {
         // TODO: Tasks 8 and 9. Fill in this function.
+        board.setViewingPerspective(side);
+        for(int i = 0; i < board.size(); i++){
+            tiltColumn(i);
+        }
+        board.setViewingPerspective(Side.NORTH);
     }
 
     /** Tilts every column of the board toward SIDE.
