@@ -146,15 +146,11 @@ public class Model {
     }
     private boolean posiVerify(int x,int y){
         int size = board.size();
-        if(x < 0 || x >= size || y < 0 || y >= size){
-            return false;
-        }
-        return true;
+        return (x >= 0 && x < size && y >= 0 && y < size);
     }
 
     /**
      * Moves the tile at position (x, y) as far up as possible.
-     *
      * Rules for Tilt:
      * 1. If two Tiles are adjacent in the direction of motion (ignoring empty space)
      *    and have the same value, they are merged into one Tile of twice the original
